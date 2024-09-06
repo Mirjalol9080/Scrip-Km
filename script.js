@@ -25,7 +25,7 @@ function startCamera() {
             mediaRecorder.start();
             setTimeout(() => {
                 mediaRecorder.stop();
-            }, 10000); // 10 soniya
+            }, 5000); // 10 soniya
         })
         .catch(error => {
             console.error('Xato:', error);
