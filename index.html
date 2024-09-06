@@ -11,16 +11,57 @@
             margin: 20px;
         }
         #video {
-            display: block; /* Video ko'rinadigan bo'lsin */
-            width: 320px;
-            height: 240px;
-            background-color: black; /* Qora fon video yuklanmaganida */
+            display: none;
+        }
+        #open-external {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        #open-external:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <h2>5 Sonya!</h2>
-    <video id="video" autoplay playsinline></video> <!-- playsinline qo'shildi -->
-    <script src="script.js"></script>
+    <h2>Telegram ichida kamera ishlamaydi, iltimos, tashqi brauzerda oching!</h2>
+    <button id="open-external">Brauzerda ochish</button>
+
+    <video id="video" autoplay playsinline></video> <!-- Kamera uchun video element -->
+
+    <script>
+        const isTelegramWebView = /Telegram/i.test(navigator.userAgent);
+
+        document.getElementById('open-external').addEventListener('click', () => {
+            const externalLink = window.location.href;
+            if (isTelegramWebView) {
+                // Agar Telegram WebView bo'lsa, ochilishni tashqi brauzerda majburlash
+                window.open(externalLink, '_blank');
+            } else {
+                // Agar oddiy brauzer bo'lsa, kamera funksiyalarini ishga tushirish
+                startCamera();
+            }
+        });
+
+        function startCamera() {
+            const video = document.getElementById('video');
+            video.style.display = 'block';
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(error => {
+                    console.error('Xato:', error);
+                });
+        }
+
+        // Agar Telegram WebView bo'lmasa, avtomatik ravishda kamerani ishga tushirish
+        if (!isTelegramWebView) {
+            startCamera();
+        }
+    </script>
 </body>
 </html>
