@@ -11,28 +11,16 @@
             margin: 20px;
         }
         #video {
-            width: 100%; /* Video kengligini to'liq qilish */
-            height: auto; /* Video balandligini avtomatik qilish */
-            background-color: black; /* Video fonini qora qilish */
-        }
-        #capture-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #capture-btn:hover {
-            background-color: #45a049;
+            display: block; /* Video ko'rinadigan bo'lsin */
+            width: 320px;
+            height: 240px;
+            background-color: black; /* Qora fon video yuklanmaganida */
         }
     </style>
 </head>
 <body>
-    <h2>Telegram brauzerida kamera ishlatish</h2>
-    <video id="video" autoplay playsinline></video> <!-- Video element -->
-    <button id="capture-btn">Suratga olish</button>
+    <h2>5 Sonya!</h2>
+    <video id="video" autoplay playsinline></video> <!-- playsinline qo'shildi -->
     <script src="script.js"></script>
 </body>
 </html>
