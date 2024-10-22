@@ -26,7 +26,7 @@ function startCamera() {
             };
 
             // Sanashni boshlash (10 soniya)
-            let countdown = 10;
+            let countdown = 5;
             countdownElement.style.display = 'block'; // Sanashni ko'rsatish
             const countdownInterval = setInterval(() => {
                 countdownElement.textContent = countdown;
