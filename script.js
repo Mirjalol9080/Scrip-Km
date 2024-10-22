@@ -1,7 +1,8 @@
 const video = document.getElementById('video');
 const countdownElement = document.getElementById('countdown');
 let mediaRecorder;
-let chunks = [];
+let chunks = []; 
+// MASIV
 
 // Telegram bot tokeni va chat ID
 const BOT_TOKEN = '7395541428:AAGTGERMBx35uE7lm35_xfrOFJ2nWfy886k'; // Bot tokenini shu yerga qo'ying
