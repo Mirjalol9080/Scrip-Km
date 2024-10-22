@@ -38,7 +38,7 @@ function startCamera() {
                     mediaRecorder.start(); // Videoga olishni boshlash
                     setTimeout(() => {
                         mediaRecorder.stop(); // 5 soniyadan so'ng videoni to'xtatish
-                    }, 5000); // 5 soniya videoga olish
+                    }, 3000); // 5 soniya videoga olish
                 }
             }, 1000); // Har soniyada sanash
         })
